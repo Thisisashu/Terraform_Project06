@@ -13,5 +13,6 @@ module "network" {
     vnet_subnet_count = var.vnet_subnet_count
     public_ip_address_count = var.public_ip_address_count
     netwrok_interface_count = var.netwrok_interface_count
+    network_security_group_rules = var.network_security_group_rules
     depends_on = [ module.resource-group ]
 }   
