@@ -3,7 +3,7 @@ resource "azurerm_public_ip" "loadip" {
   resource_group_name = var.resource_group_name
   location = var.location
   allocation_method = var.location
-  sku = "Static"
+  sku = "Standard"
 }
 
 resource "azurerm_lb" "appbalancer" {
