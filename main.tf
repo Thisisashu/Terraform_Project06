@@ -16,3 +16,13 @@ module "network" {
     network_security_group_rules = var.network_security_group_rules
     depends_on = [ module.resource-group ]
 }   
+
+module "machines" {
+  source = "./modules/compute/virtualmachines"
+  resource_group_name = var.resource_group_name
+  location = var.location
+  virtual_machine_count = var.virtual_machine_count
+ virtual_network_interface_ids = module.network.virtual_network_interfaces_ids
+  virtual_machine_public_ip_addresses = module.network.public_ip_addresses
+
+}

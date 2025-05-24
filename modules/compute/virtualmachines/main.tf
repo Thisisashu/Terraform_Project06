@@ -12,6 +12,10 @@ resource "azurerm_linux_virtual_machine" "appvm" {
     var.virtual_network_interface_ids[count.index]
   ]
 
+  lifecycle {
+    ignore_changes = [ identity ]
+  }
+
     os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
@@ -26,5 +30,5 @@ resource "azurerm_linux_virtual_machine" "appvm" {
 }
 
 data "local_file" "cloudinit" {
-  filename = "./modules/compute/virtualmachines/cloudinit"
+  filename = "./modules/compute/virtualmachines/cloudinit.yml"
 }
