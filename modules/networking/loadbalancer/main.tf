@@ -23,11 +23,30 @@ resource "azurerm_lb_backend_address_pool" "virtual_machine_pool" {
   name = "VirtualMachinePool"
 }
 
-resource "azurerm_lb_backend_address_pool" "appvmaddress" {
-  count = var.number_of_machines
-  name = "machine${count.index}"
+resource "azurerm_lb_backend_address_pool_address" "appvmaddress" {
+  count=var.number_of_machines  
+  name                    = "machine${count.index}"
   backend_address_pool_id = azurerm_lb_backend_address_pool.virtual_machine_pool.id
-  virtual_network_id = var.virtual_network_id
-  ip_adddress= var.network_interface_private_ip_address[count.index]
+  // We need the network id and the private IP address of each network interface
+  virtual_network_id      = var.virtual_network_id
+  ip_address              = var.network_interface_private_ip_address[count.index]
+}
 
+resource "azurerm_lb_probe" "probeA" {
+  loadbalancer_id = azurerm_lb.appbalancer.id
+  name            = "probeA"
+  port            = 80
+  protocol = "Tcp"
+}
+
+resource "azurerm_lb_rule" "RuleA" {
+  loadbalancer_id                = azurerm_lb.appbalancer.id
+  name                           = "RuleA"
+  protocol                       = "Tcp"
+  frontend_port                  = 80
+  backend_port                   = 80
+  frontend_ip_configuration_name = "frontend-ip"
+  probe_id = azurerm_lb_probe.probeA.id
+  backend_address_pool_ids = [azurerm_lb_backend_address_pool.virtual_machine_pool.id]
+ 
 }
